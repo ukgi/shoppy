@@ -1,5 +1,4 @@
 import React from "react";
-import { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
 import { createContext } from "react";
@@ -7,11 +6,7 @@ import { createContext } from "react";
 export const UserContext = createContext();
 
 export function UserContextApiProvider({ children }) {
-  const [user, setUser] = useState(() => sessionStorage.getItem("user") || "");
-
-  useEffect(() => {
-    sessionStorage.setItem("user", user);
-  }, [user]);
+  const [user, setUser] = useState();
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
