@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { useState } from "react";
 import { createContext } from "react";
+import {
+  logInGoogle,
+  logOut,
+  onUserStateChange,
+} from "../services/firebaseAuth";
 
 export const UserContext = createContext();
 
 export function UserContextApiProvider({ children }) {
   const [user, setUser] = useState();
 
+  useEffect(() => {
+    onUserStateChange(setUser);
+  }, [setUser]);
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider
+      value={{ user, setUser, login: logInGoogle, logout: logOut }}
+    >
       {children}
     </UserContext.Provider>
   );

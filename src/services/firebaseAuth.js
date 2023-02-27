@@ -6,16 +6,10 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { get, getDatabase, ref, set } from "firebase/database";
+import { get, getDatabase, ref } from "firebase/database";
+import { firebaseConfig } from "../config/firebaseConfig";
 
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-};
-
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 const database = getDatabase(app);
 
@@ -50,12 +44,4 @@ async function adminUser(user) {
       }
       return user;
     });
-}
-
-export function writeUserData(userId, name, email, imageUrl) {
-  set(ref(database, "users/" + userId), {
-    username: name,
-    email: email,
-    profile_picture: imageUrl,
-  });
 }

@@ -2,23 +2,14 @@ import React from "react";
 import { IoShirt } from "react-icons/io5";
 import { BsFillPencilFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import {
-  logInGoogle,
-  logOut,
-  onUserStateChange,
-} from "../services/firebaseAuth";
+import { logInGoogle, logOut } from "../services/firebaseAuth";
 import { useUserContext } from "../context/UserContextApi";
-import { useEffect } from "react";
+
 import User from "./User";
 import Button from "./ui/Button";
 
 export default function Header() {
-  const { user, setUser } = useUserContext();
-
-  useEffect(() => {
-    onUserStateChange(setUser);
-  }, [setUser]);
-
+  const { user, setUser, login, logout } = useUserContext();
   return (
     <nav className='w-full p-5 border-b border-gray-300  flex justify-between items-center'>
       <Link to='/' className='flex items-center cursor-pointer'>
@@ -29,9 +20,11 @@ export default function Header() {
         <Link to='/products' className='text-1xl md:text-2xl'>
           Products
         </Link>
-        <Link to='/carts' className='text-1xl md:text-2xl'>
-          Carts
-        </Link>
+        {user && (
+          <Link to='/carts' className='text-1xl md:text-2xl'>
+            Carts
+          </Link>
+        )}
         {user && user.isAdmin && (
           <Link to='/products/new' className='text-1xl md:text-2xl'>
             <BsFillPencilFill />

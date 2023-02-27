@@ -6,17 +6,44 @@ import AllProducts from "../pages/AllProducts";
 import NewProduct from "../pages/NewProduct";
 import ProductDetail from "../pages/ProductDetail";
 import MyCart from "../pages/MyCart";
+import ProtectedRoute from "../pages/ProtectedRoute";
+import { UserContextApiProvider } from "../context/UserContextApi";
+import ProductsContextApiProvider from "../context/ProductsContextApi";
 
 export default function AnimateRoutes() {
   return (
     <AnimatePresence>
-      <Routes>
-        <Route path='/' exact element={<Home />}></Route>
-        <Route path='/products' exact element={<AllProducts />}></Route>
-        <Route path='/products/new' exact element={<NewProduct />}></Route>
-        <Route path='/products/:id' exact element={<ProductDetail />}></Route>
-        <Route path='/carts' exact element={<MyCart />}></Route>
-      </Routes>
+      <UserContextApiProvider>
+        <ProductsContextApiProvider>
+          <Routes>
+            <Route path='/' exact element={<Home />}></Route>
+            <Route path='/products' exact element={<AllProducts />}></Route>
+            <Route
+              path='/products/new'
+              exact
+              element={
+                <ProtectedRoute requireAdmin>
+                  <NewProduct />
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path='/products/:id'
+              exact
+              element={<ProductDetail />}
+            ></Route>
+            <Route
+              path='/carts'
+              exact
+              element={
+                <ProtectedRoute>
+                  <MyCart />
+                </ProtectedRoute>
+              }
+            ></Route>
+          </Routes>
+        </ProductsContextApiProvider>
+      </UserContextApiProvider>
     </AnimatePresence>
   );
 }
