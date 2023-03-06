@@ -1,30 +1,29 @@
 import { getDatabase, set, ref, get, child } from "firebase/database";
-
+import { v4 as uuid } from "uuid";
 import { app } from "./firebaseAuth";
 
 const database = getDatabase(app);
 
-export async function writeProductData(productId, product, setUpload) {
-  set(ref(database, "products/" + productId), product) //
-    .then(() => {
-      setUpload((prev) => !prev);
-      setTimeout(() => setUpload(false), 3000);
-    })
-    .catch(console.error);
+export async function writeProductData(product, image) {
+  const id = uuid();
+  return set(ref(database, "products/" + id), {
+    ...product,
+    id,
+    price: parseInt(product.price),
+    image,
+    options: product.options.split(","),
+  });
 }
 
-export async function readProductData(setProducts) {
+export async function readProductData() {
   const dbRef = ref(database);
-  get(child(dbRef, "products"))
+  return get(child(dbRef, "products"))
     .then((snapshot) => {
       if (snapshot.exists()) {
-        // console.log(snapshot.val());
-        let object = snapshot.val();
-        let array = Object.keys(object).map((item) => object[item]);
-        console.log(array);
-        setProducts(array);
+        // Object.values => object의 value를 배열로 반환
+        return Object.values(snapshot.val());
       } else {
-        console.log("No data available");
+        return [];
       }
     })
     .catch(console.error);

@@ -16,6 +16,6 @@ export const uploadImage = async (imageFile) => {
   };
 
   const { data } = await axios.post(url, formData, configOfUpload);
-
-  return data;
+  console.log(data);
+  return data.url;
 };
