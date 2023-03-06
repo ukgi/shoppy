@@ -20,7 +20,7 @@ export default function Products() {
         variants={container}
         initial='hidden'
         animate='visible'
-        className='flex gap-4'
+        className='w-full grid grid-flow-row place-items-stretch lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-1 gap-4'
       >
         {products &&
           products.map((product) => (

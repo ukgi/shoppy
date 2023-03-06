@@ -28,3 +28,25 @@ export async function readProductData() {
     })
     .catch(console.error);
 }
+
+export async function storeCartProduct(state, option) {
+  const { id } = state;
+  return set(ref(database, "carts/" + id), {
+    ...state,
+    options: option,
+  });
+}
+
+export async function readCartsData() {
+  const dbRef = ref(database);
+  return get(child(dbRef, "carts"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        // Object.values => object의 value를 배열로 반환
+        return Object.values(snapshot.val());
+      } else {
+        return [];
+      }
+    })
+    .catch(console.error);
+}
