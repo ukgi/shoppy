@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { storeCartProduct } from "../services/firebaseDatabase";
+import { readCartsData, storeCartProduct } from "../services/firebaseDatabase";
+import { useCartsContext } from "../context/CartsContextApi";
 
 export default function ProductDetail() {
   // ⬇️ useLocation 을 통해 현재 url의 정보를 취득할 수 있다
@@ -10,6 +11,7 @@ export default function ProductDetail() {
   const [option, setOption] = useState(options && options[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState();
+  const { setCarts } = useCartsContext();
 
   const handleOption = (e) => {
     return setOption(e.target.value);
@@ -23,6 +25,11 @@ export default function ProductDetail() {
         setTimeout(() => {
           setSuccess(null);
         }, 4000);
+        readCartsData() //
+          .then((data) => {
+            setCarts(data.length);
+            localStorage.setItem("carts", data.length);
+          });
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
