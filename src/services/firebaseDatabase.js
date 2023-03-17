@@ -1,4 +1,4 @@
-import { getDatabase, set, ref, get, child } from "firebase/database";
+import { getDatabase, set, ref, get, child, remove } from "firebase/database";
 import { v4 as uuid } from "uuid";
 import { app } from "./firebaseAuth";
 
@@ -29,21 +29,22 @@ export async function readProductData() {
     .catch(console.error);
 }
 
-export async function storeCartProduct(state, option) {
-  const { id } = state;
-  return set(ref(database, "carts/" + id), {
-    ...state,
-    options: option,
-  });
+export async function storeCartProduct(userId, product) {
+  return set(ref(database, `carts/${userId}/${product.id}`), product);
 }
 
-export async function readCartsData() {
+export async function removeFromCart(userId, productId) {
+  return remove(ref(database, `carts/${userId}/${productId}`));
+}
+
+export async function readCartsData(userId) {
   const dbRef = ref(database);
-  return get(child(dbRef, "carts"))
+  return get(child(dbRef, `carts/${userId}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
         // Object.values => object의 value를 배열로 반환
-        return Object.values(snapshot.val());
+        // 값들을 배열로 읽어올 때 사용
+        return Object.values(snapshot.val() || {});
       } else {
         return [];
       }

@@ -19,7 +19,13 @@ export function UserContextApiProvider({ children }) {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, login: logInGoogle, logout: logOut }}
+      value={{
+        user,
+        uid: user && user.uid,
+        setUser,
+        login: logInGoogle,
+        logout: logOut,
+      }}
     >
       {children}
     </UserContext.Provider>

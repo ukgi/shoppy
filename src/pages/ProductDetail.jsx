@@ -3,23 +3,27 @@ import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { readCartsData, storeCartProduct } from "../services/firebaseDatabase";
 import { useCartsContext } from "../context/CartsContextApi";
+import { useUserContext } from "../context/UserContextApi";
 
 export default function ProductDetail() {
   // ⬇️ useLocation 을 통해 현재 url의 정보를 취득할 수 있다
   const { state } = useLocation();
+
   const { category, description, title, price, image, options } = state;
-  const [option, setOption] = useState(options && options[0]);
+  const [selectedOption, setSelectedOption] = useState(options && options[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState();
   const { setCarts } = useCartsContext();
+  const { uid } = useUserContext();
 
   const handleOption = (e) => {
-    return setOption(e.target.value);
+    return setSelectedOption(e.target.value);
   };
 
   const handleStoreCart = () => {
+    const product = { ...state, options: selectedOption, quantity: 1 };
     setIsLoading(true);
-    storeCartProduct(state, option) //
+    storeCartProduct(uid, product) //
       .then(() => {
         setSuccess("성공적으로 장바구니에 저장되었습니다👍");
         setTimeout(() => {
@@ -52,11 +56,11 @@ export default function ProductDetail() {
           <select
             onChange={handleOption}
             className='w-36 py-2 border-dashed border-2 outline-none border-violet-300'
-            value={option}
+            value={selectedOption}
           >
             {options &&
-              options.map((option, index) => {
-                return <option key={index}>{option}</option>;
+              options.map((selectedOption, index) => {
+                return <option key={index}>{selectedOption}</option>;
               })}
           </select>
         </div>

@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 export const CartsContext = createContext();
 
 export default function CartsContextApiProvider({ children }) {
-  const [carts, setCarts] = useState(localStorage.getItem("carts"));
+  const [carts, setCarts] = useState();
 
   return (
     <CartsContext.Provider value={{ carts, setCarts }}>

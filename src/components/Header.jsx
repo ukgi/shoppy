@@ -4,15 +4,17 @@ import { BsFillPencilFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logInGoogle, logOut } from "../services/firebaseAuth";
 import { useUserContext } from "../context/UserContextApi";
-import { BsFillCartFill } from "react-icons/bs";
 
 import User from "./User";
 import Button from "./ui/Button";
 import { useCartsContext } from "../context/CartsContextApi";
+import CartStatus from "./CartStatus";
 
 export default function Header() {
   const { user, setUser, login, logout } = useUserContext();
+
   const { carts } = useCartsContext();
+
   return (
     <nav className='w-full p-5 border-b border-gray-300  flex justify-between items-center'>
       <Link to='/' className='flex items-center cursor-pointer'>
@@ -24,9 +26,8 @@ export default function Header() {
           Products
         </Link>
         {user && (
-          <Link to='/carts' className='text-1xl md:text-2xl'>
-            {carts && <span>{carts}</span>}
-            <BsFillCartFill />
+          <Link to='/carts' className='relative text-1xl md:text-2xl'>
+            <CartStatus />
           </Link>
         )}
         {user && user.isAdmin && (
