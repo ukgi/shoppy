@@ -1,17 +1,13 @@
 import React from "react";
-import { readProductData } from "../services/firebaseDatabase";
-import { useQuery } from "@tanstack/react-query";
 import ProductCard from "./ProductCard";
 import { motion } from "framer-motion";
 import { container } from "../animation/Variants";
+import useProducts from "../hooks/useProducts";
 
 export default function Products() {
   const {
-    isLoading,
-    error,
-    data: products,
-  } = useQuery(["products"], readProductData);
-
+    productsQuery: { isLoading, error, data: products },
+  } = useProducts();
   return (
     <>
       {isLoading && <p>Loading...</p>}

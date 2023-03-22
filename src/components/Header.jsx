@@ -7,13 +7,10 @@ import { useUserContext } from "../context/UserContextApi";
 
 import User from "./User";
 import Button from "./ui/Button";
-import { useCartsContext } from "../context/CartsContextApi";
 import CartStatus from "./CartStatus";
 
 export default function Header() {
-  const { user, setUser, login, logout } = useUserContext();
-
-  const { carts } = useCartsContext();
+  const { user } = useUserContext();
 
   return (
     <nav className='w-full p-5 border-b border-gray-300  flex justify-between items-center'>

@@ -2,16 +2,12 @@ import React from "react";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import { AiOutlineMinusSquare } from "react-icons/ai";
 import { BsFillTrashFill } from "react-icons/bs";
-import { useUserContext } from "../context/UserContextApi";
-import { storeCartProduct } from "../services/firebaseDatabase";
+import useCarts from "../hooks/useCarts";
 
 export default function CartItem({ product }) {
-  const { uid } = useUserContext();
-  const { image, options, price, title, quantity } = product;
+  const { handleStoreUpdate, handleDeleteItem } = useCarts();
+  const { id: productId, image, options, price, title, quantity } = product;
 
-  const handleQuantityPluse = () => {
-    return storeCartProduct(uid, { ...product, quantity: quantity + 1 });
-  };
   return (
     <div className='mb-7 flex justify-between items-center'>
       <div className='flex items-center gap-3'>
@@ -23,10 +19,27 @@ export default function CartItem({ product }) {
         </div>
       </div>
       <div className='flex items-center gap-1'>
-        <AiOutlinePlusSquare onClick={handleQuantityPluse} />
+        <AiOutlinePlusSquare
+          className='cursor-pointer'
+          onClick={() =>
+            handleStoreUpdate.mutate({ ...product, quantity: quantity + 1 })
+          }
+        />
         <span>{quantity}</span>
-        <AiOutlineMinusSquare />
-        <BsFillTrashFill />
+        {quantity === 1 ? (
+          <span></span>
+        ) : (
+          <AiOutlineMinusSquare
+            className='cursor-pointer'
+            onClick={() =>
+              handleStoreUpdate.mutate({ ...product, quantity: quantity - 1 })
+            }
+          />
+        )}
+        <BsFillTrashFill
+          className='cursor-pointer'
+          onClick={() => handleDeleteItem.mutate({ productId })}
+        />
       </div>
     </div>
   );

@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { readCartsData, storeCartProduct } from "../services/firebaseDatabase";
-import { useCartsContext } from "../context/CartsContextApi";
-import { useUserContext } from "../context/UserContextApi";
+import useCarts from "../hooks/useCarts";
 
 export default function ProductDetail() {
   // ⬇️ useLocation 을 통해 현재 url의 정보를 취득할 수 있다
   const { state } = useLocation();
-
   const { category, description, title, price, image, options } = state;
   const [selectedOption, setSelectedOption] = useState(options && options[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState();
-  const { setCarts } = useCartsContext();
-  const { uid } = useUserContext();
+
+  const { handleStoreUpdate } = useCarts();
 
   const handleOption = (e) => {
     return setSelectedOption(e.target.value);
@@ -23,20 +20,21 @@ export default function ProductDetail() {
   const handleStoreCart = () => {
     const product = { ...state, options: selectedOption, quantity: 1 };
     setIsLoading(true);
-    storeCartProduct(uid, product) //
-      .then(() => {
+    handleStoreUpdate.mutate(product, {
+      onSuccess: () => {
         setSuccess("성공적으로 장바구니에 저장되었습니다👍");
         setTimeout(() => {
           setSuccess(null);
         }, 4000);
-        readCartsData() //
-          .then((data) => {
-            setCarts(data.length);
-            localStorage.setItem("carts", data.length);
-          });
-      })
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
+      },
+      onError: () => {
+        setSuccess("이미 장바구니에 담겨있어요!");
+        setTimeout(() => {
+          setSuccess(null);
+        }, 4000);
+      },
+    });
+    setIsLoading(false);
   };
 
   return (
